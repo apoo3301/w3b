@@ -45,20 +45,20 @@ export const testimonials = [
 
 export const bentoImages = [
   {
-    src: 'https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-    text: 'Luxueuses villas avec vue sur mer',
+    src: "https://static.wixstatic.com/media/39f71a_6b3f34ba81d34bf88e535aa10706db69~mv2.jpg/v1/fit/w_1762,h_1506,q_90/39f71a_6b3f34ba81d34bf88e535aa10706db69~mv2.webp",
+    text: 'Nanzer',
   },
   {
-    src: 'https://images.unsplash.com/photo-1615880484746-a134be9a6ecf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
-    text: 'Yachts privés pour des croisières exclusives',
+    src: "https://static.wixstatic.com/media/39f71a_383a02299a934e249dbe187172454fb3~mv2.jpg/v1/fit/w_1413,h_1207,q_90/39f71a_383a02299a934e249dbe187172454fb3~mv2.webp",
+    text: 'Grimaud',
   },
   {
-    src: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-    text: 'Restaurants gastronomiques étoilés',
+    src: "https://static.wixstatic.com/media/39f71a_8672318ca91144dca4848b04bd0678c9~mv2.jpg/v1/fit/w_1762,h_1506,q_90/39f71a_8672318ca91144dca4848b04bd0678c9~mv2.webp",
+    text: 'jsp ki c',
   },
   {
-    src: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-    text: 'Expériences sur-mesure uniques',
+    src: "https://static.wixstatic.com/media/39f71a_273bff506aa54b66927aaf17086d35fe~mv2.jpg/v1/fit/w_1564,h_1336,q_90/39f71a_273bff506aa54b66927aaf17086d35fe~mv2.webp",
+    text: '118',
   },
 ]
 

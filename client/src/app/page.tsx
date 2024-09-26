@@ -157,7 +157,7 @@ export default function LandingPage() {
               <span className="font-thin">Welkom</span> <span className="font-light">Home</span>
             </h1>            <p className="text-xl md:text-2xl font-light">Expérience de luxe dans le Golfe de Saint-Tropez</p>
             <motion.button
-              className="mt-8 px-6 py-3 bg-gold text-white rounded-full text-lg font-semibold hover:bg-yellow-600 transition-colors"
+              className="mt-8 px-6 py-3 bg-gold text-white rounded-full text-lg font-semibold hover:bg-gray-500 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
