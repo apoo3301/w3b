@@ -153,8 +153,9 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
           >
-            <h1 className="text-5xl md:text-7xl font-light mb-4">Welkom Home</h1>
-            <p className="text-xl md:text-2xl font-light">Expérience de luxe dans le Golfe de Saint-Tropez</p>
+            <h1 className="text-5xl md:text-7xl mb-4">
+              <span className="font-thin">Welkom</span> <span className="font-light">Home</span>
+            </h1>            <p className="text-xl md:text-2xl font-light">Expérience de luxe dans le Golfe de Saint-Tropez</p>
             <motion.button
               className="mt-8 px-6 py-3 bg-gold text-white rounded-full text-lg font-semibold hover:bg-yellow-600 transition-colors"
               whileHover={{ scale: 1.05 }}
