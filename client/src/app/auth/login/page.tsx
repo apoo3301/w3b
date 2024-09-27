@@ -1,19 +1,9 @@
-// import { LoginForm } from "~/components/auth/loginForm";
-// import { Suspense } from "react";
-
-// export default function LoginPage() {
-//   return (
-//     <Suspense>
-//       <LoginForm />
-//     </Suspense>
-//   );
-// }
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { LoginForm } from '~/components/auth/loginForm';
-// import { LoginForm } from "~/components/auth/loginForm";
 import { buttonVariants } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: 'Authentication',
@@ -44,6 +34,7 @@ export default function AuthenticationPage() {
             strokeLinecap="round"
             strokeLinejoin="round"
             className="mr-2 h-6 w-6"
+            aria-hidden="true"
           >
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
@@ -70,8 +61,9 @@ export default function AuthenticationPage() {
               Enter your email below to sign in
             </p>
           </div>
-          {/* <UserAuthForm /> */}
+          <Suspense>
           <LoginForm />
+          </Suspense>
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{' '}
             <Link
