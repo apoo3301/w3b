@@ -62,13 +62,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
-      <CardWrapper
-        headerLabel={"Welcome back"}
-        backButtonLabel="Don't have an account?"
-        backButtonHref="/auth/register"
-        showSocial
-      >
+    <>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
@@ -150,7 +144,6 @@ export function LoginForm() {
             </Button>
           </form>
         </Form>
-      </CardWrapper>
-    </div>
+    </>
   );
 }

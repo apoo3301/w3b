@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, Clock, Lock, DollarSign, Star, Menu, X } from 'lucide-react'
+import { ArrowRight, Clock, Lock, DollarSign, Star, Menu, X, LogIn } from 'lucide-react'
 import { images, services, bentoImages, testimonials, lifestyleImages } from "~/lib/constants"
 
 
@@ -15,6 +15,11 @@ export default function LandingPage() {
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
   const parallaxRef = useRef(null)
+
+
+  const handleClick = () => {
+    window.location.href = "/login"
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,27 +55,6 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {/* <svg
-                className="w-8 h-8 mr-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"
-                  stroke={scrolled ? '#1a202c' : '#ffffff'}
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M9 22V12h6v10"
-                  stroke={scrolled ? '#1a202c' : '#ffffff'}
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg> */}
               <svg preserveAspectRatio="none" data-bbox="166.99 353.7 284.01 212.3" viewBox="166.99 353.7 284.01 212.3" xmlns="http://www.w3.org/2000/svg" data-type="shape" role="presentation" aria-hidden="true">
                 <g>
                   <path d="M421.89 532.62V387.07c0-7.9.73-13.64 2.19-17.23s4.16-6.05 8.08-7.38c3.93-1.34 10.21-2.15 18.84-2.46v-6.3c-13.19.61-15.54.92-43.31.92-25.36 0-44.96-.3-58.79-.92v6.3c8.75.31 15.1 1.12 19.02 2.46 3.93 1.32 6.6 3.79 7.99 7.38 1.4 3.59 2.1 9.33 2.1 17.23v111.07l-70.15-92.92-7.32 9.08-79 113.68V387.07c0-7.9.73-13.64 2.18-17.23 1.46-3.59 4.16-6.05 8.09-7.38 3.93-1.34 10.21-2.15 18.83-2.46v-6.3c-13.19.61-15.53.92-43.31.92-25.36 0-26.51-.3-40.34-.92v6.3c8.75.31 15.1 1.12 19.02 2.46 3.93 1.32 6.6 3.79 7.99 7.38 1.4 3.59 2.1 9.33 2.1 17.23v145.55c0 7.89-.7 13.64-2.1 17.22-1.39 3.59-4.06 6.05-7.99 7.38-3.93 1.33-10.27 2.15-19.02 2.46v6.3c13.83-.61 14.98-.92 40.34-.92 27.91 0 30.25.31 43.31.92v-6.3c-8.62-.31-14.9-1.13-18.83-2.46-3.93-1.33-6.63-3.8-8.09-7.38-.45-1.12-.71-2.84-1.03-4.39 1.33-5.56 4.79-12.55 10.45-21.01l56.02-82.4 79.81 103.61c1.22 1.64 3.52 4.42 5.25 6.7-1.52 2.14-3.46 3.9-6.3 4.86-3.93 1.33-10.27 2.15-19.02 2.46v6.3c13.83-.61 33.42-.92 58.79-.92 27.9 0 30.24.31 43.31.92v-6.3c-8.63-.31-14.9-1.13-18.84-2.46-3.93-1.33-6.63-3.8-8.08-7.38-1.46-3.57-2.19-9.32-2.19-17.21"></path>
@@ -78,11 +62,11 @@ export default function LandingPage() {
                 </g>
               </svg>
               <Link href="/" className={scrolled ? 'text-gray-800' : 'text-white'}>
-                elkom Home.
+                Welkom Home.
               </Link>
             </motion.div>
-            <div className="hidden md:flex space-x-6">
-              {['Nos Hôtes', 'Propriétaire', 'A Propos', 'Nous Rejoindre'].map((item) => (
+            <div className="hidden md:flex items-center space-x-6">
+              {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
                 <motion.div key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Link
                     href={`#${item.toLowerCase()}`}
@@ -93,8 +77,28 @@ export default function LandingPage() {
                   </Link>
                 </motion.div>
               ))}
+              <motion.button
+                className={`flex items-center ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                  } transition-colors`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleClick}
+                
+              >
+                <LogIn className="mr-2" size={20} />
+                Se connecter
+              </motion.button>
             </div>
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center">
+              <motion.button
+                className={`flex items-center mr-4 ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                  } transition-colors`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <LogIn className="mr-2" size={20} />
+                Se connecter
+              </motion.button>
               <button
                 onClick={toggleMenu}
                 className={`${scrolled ? 'text-gray-800' : 'text-white'} focus:outline-none`}
@@ -115,7 +119,7 @@ export default function LandingPage() {
           className="md:hidden fixed inset-0 z-40 bg-white"
         >
           <div className="flex flex-col items-center justify-center h-full space-y-8">
-            {['Services', 'Témoignages', 'Contact'].map((item) => (
+            {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
               <Link
                 key={item}
                 href={`#${item.toLowerCase()}`}
