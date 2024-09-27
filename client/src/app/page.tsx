@@ -1,8 +1,9 @@
 'use client'
 
-import { images, services, bentoImages, testimonials, lifestyleImages } from "~/lib/constants";
-import { ArrowRight, Clock, Lock, DollarSign, Star, Menu, X, LogIn } from 'lucide-react';
+import { images, services, bentoImages, testimonials, lifestyleImages, languages } from "~/lib/constants";
+import { ArrowRight, Clock, Lock, DollarSign, Star, Menu, X, LogIn, Instagram, Facebook, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
 import EngagementComp from '~/components/home/engagement';
 import CustomersComp from '~/components/home/customers';
 import ContactFormComp from '~/components/home/contact';
@@ -21,6 +22,7 @@ export default function LandingPage() {
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
   const parallaxRef = useRef(null)
+  const [currentLanguage, setCurrentLanguage] = useState('fr')
 
   const handleClick = () => {
     window.location.href = "/auth/login"
@@ -46,8 +48,9 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       <motion.nav
-        className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
-          }`}
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+        }`}
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -75,38 +78,75 @@ export default function LandingPage() {
                 <motion.div key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Link
                     href={`#${item.toLowerCase()}`}
-                    className={`${scrolled ? 'text-gray-800' : 'text-white'
-                      } hover:text-gold transition-colors`}
+                    className={`${
+                      scrolled ? 'text-gray-800' : 'text-white'
+                    } hover:text-gold transition-colors`}
                   >
                     {item}
                   </Link>
                 </motion.div>
               ))}
               <motion.button
-                className={`flex items-center ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                  } transition-colors`}
+                className={`flex items-center ${
+                  scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                } transition-colors`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleClick}
-
               >
                 <LogIn className="mr-2" size={20} />
                 Se connecter
               </motion.button>
+              <a
+                href="https://www.instagram.com/welkomhome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${
+                  scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                } transition-colors`}
+              >
+                <Instagram size={20} />
+              </a>
+              <a
+                href="https://www.facebook.com/welkomhome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${
+                  scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                } transition-colors`}
+              >
+                <Facebook size={20} />
+              </a>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className={`flex items-center ${
+                      scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                    } transition-colors`}
+                  >
+                    {languages.find(lang => lang.code === currentLanguage)?.flag}
+                    <ChevronDown size={16} className="ml-1" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      className="flex items-center w-full px-2 py-1 hover:bg-gray-100"
+                      onClick={() => setCurrentLanguage(lang.code)}
+                    >
+                      <span className="mr-2">{lang.flag}</span>
+                      {lang.name}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
             </div>
-            <div className="md:hidden flex items-center">
-              <motion.button
-                className={`flex items-center mr-4 ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                  } transition-colors`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <LogIn className="mr-2" size={20} />
-                Se connecter
-              </motion.button>
+            <div className="md:hidden">
               <button
                 onClick={toggleMenu}
                 className={`${scrolled ? 'text-gray-800' : 'text-white'} focus:outline-none`}
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -115,28 +155,85 @@ export default function LandingPage() {
         </div>
       </motion.nav>
 
-      {isMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden fixed inset-0 z-40 bg-white"
-        >
-          <div className="flex flex-col items-center justify-center h-full space-y-8">
-            {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
-              <Link
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-2xl text-gray-800 hover:text-gold transition-colors"
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 bg-white md:hidden"
+          >
+            <div className="flex flex-col items-center justify-center h-full space-y-8 p-6">
+              <button
                 onClick={toggleMenu}
+                className="absolute top-4 right-4 text-gray-800 focus:outline-none"
+                aria-label="Close menu"
               >
-                {item}
-              </Link>
-            ))}
-          </div>
-        </motion.div>
-      )}
+                <X size={24} />
+              </button>
+              {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
+                <Link
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-2xl text-gray-800 hover:text-gold transition-colors"
+                  onClick={toggleMenu}
+                >
+                  {item}
+                </Link>
+              ))}
+              <button
+                className="flex items-center text-2xl text-gray-800 hover:text-gold transition-colors"
+                onClick={() => {
+                  handleClick();
+                  toggleMenu();
+                }}
+              >
+                <LogIn className="mr-2" size={24} />
+                Se connecter
+              </button>
+              <div className="flex space-x-6">
+                <a
+                  href="https://www.instagram.com/welkomhome"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-800 hover:text-gold transition-colors"
+                  onClick={toggleMenu}
+                >
+                  <Instagram size={24} />
+                </a>
+                <a
+                  href="https://www.facebook.com/welkomhome"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-800 hover:text-gold transition-colors"
+                  onClick={toggleMenu}
+                >
+                  <Facebook size={24} />
+                </a>
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="text-gray-800 mb-2">Langue</p>
+                <div className="flex space-x-4">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      className="flex items-center px-2 py-1 hover:bg-gray-100 rounded"
+                      onClick={() => {
+                        setCurrentLanguage(lang.code);
+                        toggleMenu();
+                      }}
+                    >
+                      <span className="mr-2">{lang.flag}</span>
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         className="relative h-screen overflow-hidden"
