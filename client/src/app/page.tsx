@@ -43,14 +43,22 @@ export default function LandingPage() {
     }
   }, [])
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+    document.body.style.overflow = isMenuOpen ? 'auto' : 'hidden'
+  }
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-white">
       <motion.nav
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
-        }`}
+        className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+          }`}
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -78,18 +86,16 @@ export default function LandingPage() {
                 <motion.div key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Link
                     href={`#${item.toLowerCase()}`}
-                    className={`${
-                      scrolled ? 'text-gray-800' : 'text-white'
-                    } hover:text-gold transition-colors`}
+                    className={`${scrolled ? 'text-gray-800' : 'text-white'
+                      } hover:text-gold transition-colors`}
                   >
                     {item}
                   </Link>
                 </motion.div>
               ))}
               <motion.button
-                className={`flex items-center ${
-                  scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                } transition-colors`}
+                className={`flex items-center ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                  } transition-colors`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleClick}
@@ -101,9 +107,8 @@ export default function LandingPage() {
                 href="https://www.instagram.com/welkomhome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${
-                  scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                } transition-colors`}
+                className={`${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                  } transition-colors`}
               >
                 <Instagram size={20} />
               </a>
@@ -111,18 +116,16 @@ export default function LandingPage() {
                 href="https://www.facebook.com/welkomhome"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${
-                  scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                } transition-colors`}
+                className={`${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                  } transition-colors`}
               >
                 <Facebook size={20} />
               </a>
               <Popover>
                 <PopoverTrigger asChild>
                   <button
-                    className={`flex items-center ${
-                      scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                    } transition-colors`}
+                    className={`flex items-center ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                      } transition-colors`}
                   >
                     {languages.find(lang => lang.code === currentLanguage)?.flag}
                     <ChevronDown size={16} className="ml-1" />
@@ -162,9 +165,9 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-white md:hidden"
+            className="fixed inset-0 z-40 bg-white md:hidden overflow-y-auto"
           >
-            <div className="flex flex-col items-center justify-center h-full space-y-8 p-6">
+            <div className="flex flex-col items-center justify-center min-h-screen space-y-8 p-6">
               <button
                 onClick={toggleMenu}
                 className="absolute top-4 right-4 text-gray-800 focus:outline-none"
@@ -212,16 +215,31 @@ export default function LandingPage() {
                   <Facebook size={24} />
                 </a>
               </div>
-              <div className="flex flex-col items-center">
-                <p className="text-gray-800 mb-2">Langue</p>
-                <div className="flex space-x-4">
+              <div className="relative">
+                <button
+                  className="flex items-center text-gray-800 hover:text-gold transition-colors"
+                  onClick={() => {
+                    const dropdown = document.getElementById('language-dropdown');
+                    if (dropdown) {
+                      dropdown.classList.toggle('hidden');
+                    }
+                  }}
+                >
+                  {languages.find(lang => lang.code === currentLanguage)?.flag}
+                  <span className="ml-2">{languages.find(lang => lang.code === currentLanguage)?.name}</span>
+                  <ChevronDown size={16} className="ml-1" />
+                </button>
+                <div id="language-dropdown" className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
-                      className="flex items-center px-2 py-1 hover:bg-gray-100 rounded"
+                      className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100"
                       onClick={() => {
                         setCurrentLanguage(lang.code);
-                        toggleMenu();
+                        const dropdown = document.getElementById('language-dropdown');
+                        if (dropdown) {
+                          dropdown.classList.add('hidden');
+                        }
                       }}
                     >
                       <span className="mr-2">{lang.flag}</span>
@@ -261,7 +279,7 @@ export default function LandingPage() {
           >
             <h1 className="text-5xl md:text-7xl mb-4">
               <span className="font-thin">Welkom</span> <span className="font-light">Home</span>
-            </h1>            
+            </h1>
             <p className="text-xl md:text-2xl font-light">Expérience de luxe dans le Golfe de Saint-Tropez</p>
             <motion.button
               className="mt-8 px-6 py-3 bg-gold text-white rounded-full text-lg font-semibold hover:bg-gray-500 transition-colors"

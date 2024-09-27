@@ -13,12 +13,12 @@ export const metadata: Metadata = {
 
 export default function AuthenticationPage() {
   return (
-    <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <div className="relative min-h-screen flex flex-col items-center justify-center lg:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
         href="/examples/authentication"
         className={cn(
           buttonVariants({ variant: 'ghost' }),
-          'absolute right-4 top-4 hidden md:right-8 md:top-8'
+          'absolute right-4 top-4 md:right-8 md:top-8'
         )}
       >
         Login
@@ -27,7 +27,7 @@ export default function AuthenticationPage() {
         href="/auth/register"
         className={cn(
           buttonVariants({ variant: 'ghost' }),
-          'absolute right-4 top-16 hidden md:right-8 md:top-16'
+          'absolute right-4 top-16 md:right-8 md:top-16'
         )}
       >
         Register
@@ -68,10 +68,10 @@ export default function AuthenticationPage() {
               Create an account
             </h1>
             <p className="text-sm text-muted-foreground">
-            Enter your details below to create your account
+              Enter your details below to create your account
             </p>
           </div>
-          <Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
             <RegisterForm />
           </Suspense>
           <div className="relative">
@@ -86,7 +86,7 @@ export default function AuthenticationPage() {
           </div>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Alreay have an account?{' '}
+              Already have an account?{' '}
               <Link
                 href="/auth/login"
                 className="underline underline-offset-4 hover:text-primary"
