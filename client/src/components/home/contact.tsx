@@ -36,7 +36,7 @@ const ContactFormComp = () => {
                         </div>
                         <motion.button
                             type="submit"
-                            className="w-full bg-gold text-white py-2 rounded hover:bg-yellow-600 transition-colors"
+                            className="w-full bg-gold text-white py-2 rounded hover:bg-gray-900 transition-colors"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >

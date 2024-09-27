@@ -101,3 +101,29 @@ model TwoFactorConfirmation {
 
   @@unique([userId])
 }
+
+model Listing {
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now())
+  address     String
+  coordinates String
+  createdBy   String
+  active      Boolean       @default(true)
+  details     ListingDetails?
+  detailsId   String? @unique
+}
+
+model ListingDetails {
+  id          String   @id @default(uuid())
+  type        String   // Type de propriété (villa ou appartement)
+  bedrooms    Int      // Nombre de chambres
+  bathrooms   Int      // Nombre de salles de bain
+  parking     Int      // Nombre de places de stationnement
+  size        Float    // Taille en mètres carrés
+  price       Float    // Prix de la location
+  description String    // Description de l'annonce
+  name        String    // Nom de la maison
+  listingId   String    @unique // ID du listing principal
+  listing     Listing   @relation(fields: [listingId], references: [id])
+}
+

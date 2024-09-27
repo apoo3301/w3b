@@ -15,7 +15,7 @@ const CustomersComp = () => {
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
                     >
-                        Témoignages Clients
+                        Avis Clients
                     </motion.h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {testimonials.map((testimonial, index) => (

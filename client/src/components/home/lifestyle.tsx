@@ -114,4 +114,3 @@ const cards = [
 ];
 
 export default LifestyleComp
-

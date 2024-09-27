@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { UserRole } from "@prisma/client";
 import { admin } from "~/actions/admin";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function AdminPage() {
   const onApiRouteClick = () => {
@@ -34,9 +35,11 @@ export default function AdminPage() {
   return (
     <Card className="w-[600px]">
       <CardHeader>
-        <p className="text-center text-2xl font-semibold">🔑 Admin</p>
+        <Link href="/admin/add-listing">
+        <Button variant="outline">Add listing</Button>
+        </Link>
       </CardHeader>
-      <CardContent className="space-y-4">
+      {/* <CardContent className="space-y-4">
         <RoleGate allowedRole={UserRole.ADMIN}>
           <FormSuccess message="You are allowed to view this content!" />
         </RoleGate>
@@ -50,7 +53,7 @@ export default function AdminPage() {
           <p>Admin-only Server Action</p>
           <Button onClick={onServerActionClick}>Click to test</Button>
         </div>
-      </CardContent>
+      </CardContent> */}
     </Card>
   );
 }

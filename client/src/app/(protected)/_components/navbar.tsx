@@ -39,7 +39,7 @@ export default function Navbar() {
           >
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
-          <span className="hidden font-bold sm:inline-block">template Admin</span>
+          <span className="hidden font-bold sm:inline-block">WH Area</span>
         </Link>
         <Sheet>
           <SheetTrigger asChild>
@@ -103,11 +103,11 @@ export default function Navbar() {
               />
             </div>
           </form>
-          <Button variant="ghost" size="icon" className="relative">
+          {/* <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
             <span className="sr-only">Toggle notifications panel</span>
             <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-destructive"></div>
-          </Button>
+          </Button> */}
           <UserButton />
         </div>
       </div>
