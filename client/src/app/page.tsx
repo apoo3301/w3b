@@ -12,7 +12,10 @@ import ServicesComp from '~/components/home/services';
 import { LayoutGrid } from '~/components/layoutGrid';
 import { useState, useEffect, useRef } from 'react';
 import OffersComp from '~/components/home/offers';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import UserButton from '~/components/home/userButton';
+import UserBtn from "~/components/home/userButton";
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false)
@@ -23,6 +26,8 @@ export default function LandingPage() {
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
   const parallaxRef = useRef(null)
   const [currentLanguage, setCurrentLanguage] = useState('fr')
+  const { data: session } = useSession();
+  const [windowWidth, setWindowWidth] = useState(0)
 
   const handleClick = () => {
     window.location.href = "/auth/login"
@@ -41,6 +46,10 @@ export default function LandingPage() {
       clearInterval(timer)
       window.removeEventListener('scroll', handleScroll)
     }
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const toggleMenu = () => {
@@ -93,16 +102,6 @@ export default function LandingPage() {
                   </Link>
                 </motion.div>
               ))}
-              <motion.button
-                className={`flex items-center ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
-                  } transition-colors`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={handleClick}
-              >
-                <LogIn className="mr-2" size={20} />
-                Se connecter
-              </motion.button>
               <a
                 href="https://www.instagram.com/welkomhome"
                 target="_blank"
@@ -144,6 +143,20 @@ export default function LandingPage() {
                   ))}
                 </PopoverContent>
               </Popover>
+              {session ? (
+                <UserBtn userName={session.user.name ?? ''} userImage={session.user.image ?? ''} userEmail={session.user.email ?? ''} scrolled={scrolled} />
+              ) : (
+                <motion.button
+                  className={`flex items-center ${scrolled ? 'text-gray-800 hover:text-gold' : 'text-white hover:text-gold'
+                    } transition-colors`}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={handleClick}
+                >
+                  <LogIn className="mr-2" size={20} />
+                  Se connecter
+                </motion.button>
+              )}
             </div>
             <div className="md:hidden">
               <button
@@ -165,9 +178,9 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-white md:hidden overflow-y-auto"
+            className="fixed inset-0 z-40 bg-white overflow-y-auto"
           >
-            <div className="flex flex-col items-center justify-center min-h-screen space-y-8 p-6">
+            <div className="flex flex-col items-center justify-start min-h-screen p-4">
               <button
                 onClick={toggleMenu}
                 className="absolute top-4 right-4 text-gray-800 focus:outline-none"
@@ -175,83 +188,102 @@ export default function LandingPage() {
               >
                 <X size={24} />
               </button>
-              {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
-                <Link
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-2xl text-gray-800 hover:text-gold transition-colors"
-                  onClick={toggleMenu}
-                >
-                  {item}
-                </Link>
-              ))}
-              <button
-                className="flex items-center text-2xl text-gray-800 hover:text-gold transition-colors"
-                onClick={() => {
-                  handleClick();
-                  toggleMenu();
-                }}
-              >
-                <LogIn className="mr-2" size={24} />
-                Se connecter
-              </button>
-              <div className="flex space-x-6">
-                <a
-                  href="https://www.instagram.com/welkomhome"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-800 hover:text-gold transition-colors"
-                  onClick={toggleMenu}
-                >
-                  <Instagram size={24} />
-                </a>
-                <a
-                  href="https://www.facebook.com/welkomhome"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-800 hover:text-gold transition-colors"
-                  onClick={toggleMenu}
-                >
-                  <Facebook size={24} />
-                </a>
+              <div className="flex flex-col items-center space-y-3 mt-16 mb-6">
+                {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
+                  <Link
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="text-lg sm:text-xl text-gray-800 hover:text-gold transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    {item}
+                  </Link>
+                ))}
               </div>
-              <div className="relative">
-                <button
-                  className="flex items-center text-gray-800 hover:text-gold transition-colors"
-                  onClick={() => {
-                    const dropdown = document.getElementById('language-dropdown');
-                    if (dropdown) {
-                      dropdown.classList.toggle('hidden');
-                    }
-                  }}
-                >
-                  {languages.find(lang => lang.code === currentLanguage)?.flag}
-                  <span className="ml-2">{languages.find(lang => lang.code === currentLanguage)?.name}</span>
-                  <ChevronDown size={16} className="ml-1" />
-                </button>
-                <div id="language-dropdown" className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100"
-                      onClick={() => {
-                        setCurrentLanguage(lang.code);
-                        const dropdown = document.getElementById('language-dropdown');
-                        if (dropdown) {
-                          dropdown.classList.add('hidden');
-                        }
-                      }}
-                    >
-                      <span className="mr-2">{lang.flag}</span>
-                      {lang.name}
-                    </button>
-                  ))}
+              <div className="w-full max-w-xs flex justify-center mb-6">
+                {session ? (
+                  <UserBtn
+                    userName={session.user.name ?? ''}
+                    userImage={session.user.image ?? ''}
+                    userEmail={session.user.email ?? ''}
+                    scrolled={scrolled}
+                  />
+                ) : (
+                  <motion.button
+                    className="flex items-center justify-center w-full px-4 py-2 text-black bg-gold rounded-full transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      handleClick()
+                      toggleMenu()
+                    }}
+                  >
+                    <LogIn className="mr-2" size={20} />
+                    Se connecter
+                  </motion.button>
+                )}
+              </div>
+              <div className="flex flex-col items-center space-y-3">
+                <div className="flex space-x-4">
+                  <a
+                    href="https://www.instagram.com/welkomhome"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-800 hover:text-gold transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    <Instagram size={windowWidth < 640 ? 20 : 24} />
+                  </a>
+                  <a
+                    href="https://www.facebook.com/welkomhome"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-800 hover:text-gold transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    <Facebook size={windowWidth < 640 ? 20 : 24} />
+                  </a>
+                </div>
+                <div className="relative">
+                  <button
+                    className="flex items-center text-gray-800 hover:text-gold transition-colors"
+                    onClick={() => {
+                      const dropdown = document.getElementById('language-dropdown-mobile')
+                      if (dropdown) {
+                        dropdown.classList.toggle('hidden')
+                      }
+                    }}
+                  >
+                    {languages.find(lang => lang.code === currentLanguage)?.flag}
+                    <span className="ml-2">{languages.find(lang => lang.code === currentLanguage)?.name}</span>
+                    <ChevronDown size={16} className="ml-1" />
+                  </button>
+                  <div id="language-dropdown-mobile" className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100"
+                        onClick={() => {
+                          setCurrentLanguage(lang.code)
+                          const dropdown = document.getElementById('language-dropdown-mobile')
+                          if (dropdown) {
+                            dropdown.classList.add('hidden')
+                          }
+                          toggleMenu()
+                        }}
+                      >
+                        <span className="mr-2">{lang.flag}</span>
+                        {lang.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
 
       <motion.div
         className="relative h-screen overflow-hidden"
