@@ -1,27 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Checkbox } from "../../../../components/ui/checkbox"
-import { Input } from "../../../../components/ui/input"
-import { Textarea } from "../../../../components/ui/textarea"
-import { Button } from "../../../../components/ui/button"
-import { Label } from "../../../../components/ui/label"
-import { BedDouble, Bath, Car, Expand, Euro, Home, FileText } from 'lucide-react'
-import React from 'react'
+import { Checkbox } from "~/components/ui/checkbox"
+import { Input } from "~/components/ui/input"
+import { Textarea } from "~/components/ui/textarea"
+import { Button } from "~/components/ui/button"
+import { Label } from "~/components/ui/label"
+import { BedDouble, Bath, Car, Expand, Euro, Home, FileText, Loader2 } from 'lucide-react'
 
+interface FormData {
+  type: string[];
+  bedrooms: string;
+  bathrooms: string;
+  parking: string;
+  size: string;
+  price: string;
+  description: string;
+  name: string;
+}
 
 export default function EditListing() {
-  const [formData, setFormData] = useState<{
-    type: string[],
-    bedrooms: string,
-    bathrooms: string,
-    parking: string,
-    size: string,
-    price: string,
-    description: string,
-    name: string
-  }>({
+  const [formData, setFormData] = useState<FormData>({
     type: [],
     bedrooms: '',
     bathrooms: '',
@@ -31,8 +31,9 @@ export default function EditListing() {
     description: '',
     name: ''
   })
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleInputChange = (e: { target: { name: any; value: any } }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
@@ -46,9 +47,13 @@ export default function EditListing() {
     }))
   }
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLoading(true)
+    // Simulating an API call
+    await new Promise(resolve => setTimeout(resolve, 2000))
     console.log(formData)
+    setIsLoading(false)
     // Here you would typically send the data to your backend
   }
 
@@ -65,7 +70,7 @@ export default function EditListing() {
         variants={fadeInUp}
         className="max-w-4xl mx-auto"
       >
-        <h1 className="text-4xl font-bold mb-8 text-center">Edit Property Listing</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center">Edit Luxury Property Listing</h1>
         <form onSubmit={handleSubmit} className="space-y-8">
           <motion.div variants={fadeInUp} className="bg-gray-50 p-8 rounded-lg shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -211,8 +216,19 @@ export default function EditListing() {
             <Button type="button" variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors">
               Cancel
             </Button>
-            <Button type="submit" className="bg-black text-white hover:bg-gray-800 transition-colors">
-              Save Changes
+            <Button 
+              type="submit" 
+              className="bg-black text-white hover:bg-gray-800 transition-colors"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </Button>
           </motion.div>
         </form>
