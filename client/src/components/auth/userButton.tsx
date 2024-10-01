@@ -37,12 +37,12 @@ export function UserButton() {
             Home
           </DropdownMenuItem>
         </HomeButton>
-        <ClientButton>
+        {/* <ClientButton>
           <DropdownMenuItem>
             <CrownIcon className="mr-2 h-4 w-4" />
             Client
           </DropdownMenuItem>
-        </ClientButton>
+        </ClientButton> */}
 
         {/* cursor-pointer on LogoutButton will work but might override DropdownMenuItem's behavior */}
         {/* <DropdownMenuItem>

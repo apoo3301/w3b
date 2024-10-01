@@ -115,14 +115,14 @@ model Listing {
 
 model ListingDetails {
   id          String   @id @default(uuid())
-  type        String   // Type de propriété (villa ou appartement)
-  bedrooms    Int      // Nombre de chambres
-  bathrooms   Int      // Nombre de salles de bain
-  parking     Int      // Nombre de places de stationnement
-  size        Float    // Taille en mètres carrés
-  price       Float    // Prix de la location
-  description String    // Description de l'annonce
-  name        String    // Nom de la maison
+  type        String
+  bedrooms    Int
+  bathrooms   Int
+  parking     Int
+  size        Float
+  price       Float
+  description String
+  name        String
   listingId   String    @unique // ID du listing principal
   listing     Listing   @relation(fields: [listingId], references: [id])
 }

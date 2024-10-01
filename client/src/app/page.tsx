@@ -93,13 +93,30 @@ export default function LandingPage() {
             <div className="hidden md:flex items-center space-x-6">
               {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
                 <motion.div key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                  <Link
-                    href={`#${item.toLowerCase()}`}
-                    className={`${scrolled ? 'text-gray-800' : 'text-white'
-                      } hover:text-gold transition-colors`}
-                  >
-                    {item}
-                  </Link>
+                  {item === 'Nos Hôtes' && (
+                    <Link
+                      href="/our-guests"
+                      className={`${scrolled ? 'text-gray-800' : 'text-white'} hover:text-gold transition-colors`}
+                    >
+                      {item}
+                    </Link>
+                  )}
+                  {item === 'Nous Rejoindre' && (
+                    <Link
+                      href="/join-us"
+                      className={`${scrolled ? 'text-gray-800' : 'text-white'} hover:text-gold transition-colors`}
+                    >
+                      {item}
+                    </Link>
+                  )}
+                  {item === 'A propos' && (
+                    <Link
+                      href="/about"
+                      className={`${scrolled ? 'text-gray-800' : 'text-white'} hover:text-gold transition-colors`}
+                    >
+                      {item}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
               <a
@@ -189,16 +206,34 @@ export default function LandingPage() {
                 <X size={24} />
               </button>
               <div className="flex flex-col items-center space-y-3 mt-16 mb-6">
-                {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
-                  <Link
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
-                    className="text-lg sm:text-xl text-gray-800 hover:text-gold transition-colors"
-                    onClick={toggleMenu}
-                  >
-                    {item}
-                  </Link>
-                ))}
+              {['Nos Hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
+                <motion.div key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                  {item === 'Nos Hôtes' && (
+                    <Link
+                      href="/our-guests"
+                      className={`${scrolled ? 'text-gray-800' : 'text-white'} hover:text-gold transition-colors`}
+                    >
+                      {item}
+                    </Link>
+                  )}
+                  {item === 'Nous Rejoindre' && (
+                    <Link
+                      href="/join-us"
+                      className={`${scrolled ? 'text-gray-800' : 'text-white'} hover:text-gold transition-colors`}
+                    >
+                      {item}
+                    </Link>
+                  )}
+                  {item === 'A propos' && (
+                    <Link
+                      href="/about"
+                      className={`${scrolled ? 'text-gray-800' : 'text-white'} hover:text-gold transition-colors`}
+                    >
+                      {item}
+                    </Link>
+                  )}
+                </motion.div>
+              ))}
               </div>
               <div className="w-full max-w-xs flex justify-center mb-6">
                 {session ? (

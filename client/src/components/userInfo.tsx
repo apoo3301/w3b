@@ -111,7 +111,7 @@ export function UserInfo({ user, label }: UserInfoProps) {
         </Card>
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
+            <CardTitle className="text-xl font-semibold">Quick Actions (dont work)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -72,6 +72,14 @@ export default function Navbar() {
           >
             Client
           </Link>
+          <Link
+            href="/settings"
+            className={`text-sm font-medium transition-colors ${
+              pathname === "/settings" ? "text-primary" : "text-muted-foreground"
+            } hover:text-primary`}
+          >
+            Settings
+          </Link>
           {role && role !== UserRole.USER && (
             <Link
               href="/admin"
@@ -82,14 +90,6 @@ export default function Navbar() {
               Admin
             </Link>
           )}
-          <Link
-            href="/settings"
-            className={`text-sm font-medium transition-colors ${
-              pathname === "/settings" ? "text-primary" : "text-muted-foreground"
-            } hover:text-primary`}
-          >
-            Settings
-          </Link>
         </nav>
 
         <div className="ml-auto flex items-center space-x-4">

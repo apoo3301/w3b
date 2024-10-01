@@ -1,40 +1,42 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "~/components/ui/card"
-import { Label } from "~/components/ui/label"
-import { MapPin } from "lucide-react"
-import { toast } from 'sonner'
-import { NewListing } from "~/actions/listing"
-import { useRouter } from 'next/navigation'
-// Note: You'll need to replace 'YOUR_GOOGLE_MAPS_API_KEY' with your actual Google Maps API key
-const GOOGLE_MAPS_API_KEY = 'AIzaSyD94MyKaZyi0JlNdGdmsamM59Ma5Gg4AoQ'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "~/components/ui/card";
+import { useState, useRef, useEffect } from 'react';
+import { Button } from "~/components/ui/button";
+import { NewListing } from "~/actions/listing";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { useRouter } from 'next/navigation';
+import { MapPin } from "lucide-react";
+import { toast } from 'sonner';
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyD94MyKaZyi0JlNdGdmsamM59Ma5Gg4AoQ";
 
 export default function AddListing() {
     const router = useRouter();
-    const [address, setAddress] = useState('')
-    const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 })
-    const [loading, setLoading] = useState(false) // État de chargement
-    const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+    const [address, setAddress] = useState('');
+    const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
+    const [loading, setLoading] = useState(false);
+    const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
     useEffect(() => {
         const loadGoogleMapsScript = () => {
-            const script = document.createElement('script')
+            const script = document.createElement('script');
+
             script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`
             script.async = true
             script.onload = initializeAutocomplete
             document.body.appendChild(script)
-        }
+        };
 
-        loadGoogleMapsScript()
+        loadGoogleMapsScript();
     }, [])
 
     const initializeAutocomplete = () => {
-        const input = document.getElementById('address-input')
+        const input = document.getElementById('address-input');
 
         if (input instanceof HTMLInputElement) {
-            autoCompleteRef.current = new window.google.maps.places.Autocomplete(input, { types: ['address'] })
+            autoCompleteRef.current = new window.google.maps.places.Autocomplete(input, { types: ['address'] });
 
             autoCompleteRef.current.addListener('place_changed', () => {
                 const place = autoCompleteRef.current?.getPlace()
@@ -43,19 +45,18 @@ export default function AddListing() {
                     setCoordinates({
                         lat: place.geometry.location ? place.geometry.location.lat() : 0,
                         lng: place.geometry.location ? place.geometry.location.lng() : 0,
-                    })
-                }
-            })
+                    });
+                };
+            });
         } else {
-            console.error('Address input element not found or is not an HTMLInputElement.')
+            console.error('Address input element not found or is not an HTMLInputElement.');
         }
     }
 
     const handleSave = async () => {
-        setLoading(true); // Activer le chargement
+        setLoading(true);
         try {
-            // Appeler la fonction addListing
-            const newListing = await NewListing(address, `${coordinates.lat},${coordinates.lng}`, 'user@example.com'); // Remplace 'user@example.com' par l'email de l'utilisateur
+            const newListing = await NewListing(address, `${coordinates.lat},${coordinates.lng}`, 'ADMIN');
             toast("New listing added successfully");
             console.log('New Listing:', newListing);
             router.replace('/admin/edit-listing/' + newListing.id);
@@ -63,7 +64,7 @@ export default function AddListing() {
             console.error('Error while saving listing:', error);
             toast("Error while adding new listing");
         } finally {
-            setLoading(false); // Désactiver le chargement
+            setLoading(false);
         }
     }
 
@@ -95,7 +96,7 @@ export default function AddListing() {
             </CardContent>
             <CardFooter>
                 <Button className="w-full" onClick={handleSave} disabled={loading}>
-                    {loading ? 'Saving...' : 'Save Listing'} {/* Changer le texte du bouton selon l'état de chargement */}
+                    {loading ? 'Saving...' : 'Save Listing'}
                 </Button>
             </CardFooter>
         </Card>
