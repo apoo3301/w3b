@@ -18,7 +18,6 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
   if (!dbUser) return { error: "Unauthorized!" };
 
-  // users who signed in with OAuth should not be able to modify these fields
   if (user.isOAuth) {
     values.email = undefined;
     values.password = undefined;
@@ -26,7 +25,6 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     values.isTwoFactorEnabled = undefined;
   }
 
-  // email update checks
   if (values.email && values.email !== user.email) {
     const existingUser = await getUserByEmail(values.email);
 
@@ -43,7 +41,6 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     return { success: "Verification email sent!" };
   }
 
-  // password update checks
   if (values.password && values.newPassword && dbUser.password) {
     const passwordsMatch = await bcrypt.compare(
       values.password,
@@ -64,20 +61,6 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     where: { id: dbUser.id },
     data: { ...values },
   });
-
-  // only needed to update session, server-side for server components
-  // client components need to update session from the client
-  // unstable_update({ user: updatedUser });
-  // or
-  // only pass User fields that are stored in session
-  // unstable_update({
-  //   user: {
-  //     name: updatedUser.name,
-  //     email: updatedUser.email,
-  //     isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
-  //     role: updatedUser.role,
-  //   },
-  // });
-
+  
   return { success: "Settings updated!" };
 };

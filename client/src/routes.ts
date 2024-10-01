@@ -6,9 +6,10 @@
 
 export const publicRoutes = [
   "/",
-  //  place email confirmation link/route here so that both logged in and logged out users can access it, instead of authRoutes where only logged out users can access
   "/auth/new-verification",
-  "/api"
+  "/our-guests",
+  "/join-us",
+  "/about"
 ];
 
 /**
@@ -36,4 +37,4 @@ export const apiAuthPrefix = "/api/auth";
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_LOGIN_REDIRECT = "/client";

@@ -1,6 +1,9 @@
 "use server";
 
-import {generateVerificationToken,generateTwoFactorToken } from "~/lib/tokens";
+import {
+  generateVerificationToken,
+  generateTwoFactorToken,
+} from "~/lib/tokens";
 import { getTwoFactorConfirmationByUserId } from "~/data/two-factor-confirmation";
 import { sendVerificationEmail, sendTwoFactorTokenEmail } from "~/lib/mail";
 import { getTwoFactorTokenByEmail } from "~/data/two-factor-token";
