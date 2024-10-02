@@ -17,19 +17,3 @@ export const NewListing = async (selectedAddress: string, coordinates: string, u
     throw new Error("Error while adding new listing");
   }
 };
-
-// export const EditListing = async () => {
-//   try {
-//     const EditListing = await db.listingDetails.create({
-//       data: {
-//         // address: selectedAddress,
-//         // coordinates: coordinates,
-//         // createdBy: userEmail,
-//       },
-//     });
-//     return EditListing;
-//   } catch (error) {
-//     console.error("Error while adding new listing:", error);
-//     throw new Error("Error while adding new listing");
-//   }
-// };

@@ -1,127 +1,88 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-import { BedDouble, Bath, Car, Expand, Euro, Home, FileText, Loader2 } from 'lucide-react';
-import { db } from '~/data/db';
-
-interface FormData {
-  type: string[];
-  bedrooms: string;
-  bathrooms: string;
-  parking: string;
-  size: string;
-  price: string;
-  description: string;
-  name: string;
-}
+import { BedDouble, Bath, Car, Expand, Euro, Home, FileText } from 'lucide-react';
 
 export default function EditListing() {
-  const params = useParams();
-  const id = params.id as string; // The ID is now directly available as params.id
+  const { id } = useParams();
+  const router = useRouter();
 
-  const [formData, setFormData] = useState<FormData>({
-    type: [],
+  const [formData, setFormData] = useState({
+    type: [] as string[],
+    name: '',
     bedrooms: '',
     bathrooms: '',
     parking: '',
     size: '',
     price: '',
-    description: '',
-    name: ''
+    description: ''
   });
 
-  useEffect(() => {
-    // Fetch the listing data when the component mounts or when the id changes
-    if (id) {
-      fetchListingData(id);
-    }
-  }, [id]);
-
-  const fetchListingData = async (listingId: string) => {
-    try {
-      const listing = await db.listingDetails.findUnique({
-        where: { id: listingId }
-      });
-      if (listing) {
-        setFormData({
-          type: listing.type.split(', '),
-          bedrooms: listing.bedrooms.toString(),
-          bathrooms: listing.bathrooms.toString(),
-          parking: listing.parking.toString(),
-          size: listing.size.toString(),
-          price: listing.price.toString(),
-          description: listing.description,
-          name: listing.name
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching listing data:", error);
-    }
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleCheckboxChange = (value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      type: prev.type.includes(value)
-        ? prev.type.filter(t => t !== value)
-        : [...prev.type, value]
-    }));
-  };
-
-  const saveListing = async (formData: FormData) => {
-    if (!id) {
-      throw new Error("Listing ID is required");
-    }
-
-    const typeString = formData.type.join(", ");
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const formDataToSend = {
+      ...formData,
+      bedrooms: Number(formData.bedrooms),
+      bathrooms: Number(formData.bathrooms),
+      parking: Number(formData.parking),
+      size: Number(formData.size),
+      price: Number(formData.price),
+      listingId: id
+    };
 
     try {
-      await db.listingDetails.update({
-        where: { id },
-        data: {
-          type: typeString,
-          bedrooms: Number(formData.bedrooms),
-          bathrooms: Number(formData.bathrooms),
-          parking: Number(formData.parking),
-          size: Number(formData.size),
-          price: Number(formData.price),
-          description: formData.description,
-          name: formData.name,
+      const response = await fetch('/api/listing-details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(formDataToSend),
       });
-      console.log("Listing updated successfully");
-    } catch (error) {
-      console.error("Error while updating listing:", error);
-      if (error instanceof Error) {
-        throw new Error(`Error while updating listing: ${error.message}`);
-      } else {
-        throw new Error("An unknown error occurred while updating listing");
-      }
-    }
-  };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await saveListing(formData);
-    // Handle post-save actions (e.g., show a success message, redirect)
-  };
+      if (response.ok) {
+        console.log('ListingDetails saved successfully');
+      } else {
+        console.error('Failed to save ListingDetails');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
   };
+
+  function handleCheckboxChange(type: string) {
+    setFormData((prevData) => {
+      if (prevData.type.includes(type)) {
+        return {
+          ...prevData,
+          type: prevData.type.filter((t) => t !== type),
+        };
+      } else {
+        return {
+          ...prevData,
+          type: [...prevData.type, type],
+        };
+      }
+    });
+  }
 
   return (
     <div className="min-h-screen bg-white text-black p-8">
@@ -139,8 +100,8 @@ export default function EditListing() {
                 <Label className="text-lg text-gray-700">Property Type</Label>
                 <div className="flex space-x-4">
                   <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="villa" 
+                    <Checkbox
+                      id="villa"
                       checked={formData.type.includes('villa')}
                       onCheckedChange={() => handleCheckboxChange('villa')}
                       className="border-gray-300 text-black focus:ring-gray-500"
@@ -148,8 +109,8 @@ export default function EditListing() {
                     <Label htmlFor="villa" className="text-gray-700">Villa</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="apartment" 
+                    <Checkbox
+                      id="apartment"
                       checked={formData.type.includes('apartment')}
                       onCheckedChange={() => handleCheckboxChange('apartment')}
                       className="border-gray-300 text-black focus:ring-gray-500"

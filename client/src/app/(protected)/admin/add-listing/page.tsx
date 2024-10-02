@@ -3,7 +3,6 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "~/components/ui/card";
 import { useState, useRef, useEffect } from 'react';
 import { Button } from "~/components/ui/button";
-import { NewListing } from "~/actions/listing";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useRouter } from 'next/navigation';
@@ -56,10 +55,36 @@ export default function AddListing() {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const newListing = await NewListing(address, `${coordinates.lat},${coordinates.lng}`, 'ADMIN');
+            const newListing = await fetch('/api/listings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    address,
+                    coordinates: `${coordinates.lat},${coordinates.lng}`,
+                    createdBy: 'ADMIN', // You can adjust this based on your auth logic
+                    details: {
+                        type: "Apartment", // Set default or dynamic values as necessary
+                        bedrooms: 2, // Replace with dynamic input values if applicable
+                        bathrooms: 1,
+                        parking: 1,
+                        size: 75.5,
+                        price: 300000,
+                        description: "Cozy apartment in the city center",
+                        name: "Lovely Apartment"
+                    },
+                }),
+            });
+
+            if (!newListing.ok) {
+                throw new Error('Failed to create listing');
+            }
+
+            const listingData = await newListing.json();
             toast("New listing added successfully");
-            console.log('New Listing:', newListing);
-            router.replace('/admin/edit-listing/' + newListing.id);
+            console.log('New Listing:', listingData);
+            router.replace('/admin/edit-listing/' + listingData.id);
         } catch (error) {
             console.error('Error while saving listing:', error);
             toast("Error while adding new listing");

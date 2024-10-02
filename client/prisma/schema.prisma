@@ -111,11 +111,13 @@ model Listing {
   active      Boolean       @default(true)
   details     ListingDetails?
   detailsId   String? @unique
+
+  ListingImage ListingImage[]
 }
 
 model ListingDetails {
   id          String   @id @default(uuid())
-  type        String
+  type        String[]
   bedrooms    Int
   bathrooms   Int
   parking     Int
@@ -123,7 +125,13 @@ model ListingDetails {
   price       Float
   description String
   name        String
-  listingId   String    @unique // ID du listing principal
+  listingId   String    @unique
   listing     Listing   @relation(fields: [listingId], references: [id])
 }
 
+model ListingImage {
+  id        String   @id @default(uuid())
+  url       String
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+}

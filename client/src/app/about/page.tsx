@@ -158,29 +158,20 @@ export default function AboutPage() {
               <Environment preset="sunset" />
             </Canvas>
           </div>
-        </motion.div>
 
-        <motion.div
-          className="mt-8 flex flex-col items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1 }}
-        >
-          {/* <Image
-            src="/vue.jpg"
-            alt="Welkom Home Ambiance"
-            width={800}
-            height={400}
-            className="rounded-lg shadow-md mb-8"
-          />
           <motion.blockquote 
-            className="italic text-2xl text-center my-12 text-gray-800 dark:text-white"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
+            className="italic text-2xl text-center my-12 px-4 py-6 bg-gray-100 dark:bg-neutral-800 rounded-lg shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1 }}
           >
-            Votre confiance nous savons la mériter
-          </motion.blockquote> */}
+            <p className="text-gray-800 dark:text-white">
+              "Votre confiance nous savons la mériter"
+            </p>
+            <footer className="mt-4 text-right text-gray-600 dark:text-gray-400">
+              - L'équipe Welkom Home
+            </footer>
+          </motion.blockquote>
         </motion.div>
       </main>
     </div>
