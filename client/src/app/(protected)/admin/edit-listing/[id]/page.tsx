@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Checkbox } from "~/components/ui/checkbox";
@@ -8,7 +8,7 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-import { BedDouble, Bath, Car, Expand, Euro, Home, FileText } from 'lucide-react';
+import {ArrowLeft, BedDouble, Bath, Car, Expand, Euro, Home, FileText } from 'lucide-react';
 
 export default function EditListing() {
   const { id } = useParams();
@@ -25,43 +25,41 @@ export default function EditListing() {
     description: ''
   });
 
+  // Fetch existing listing details when component mounts
+  useEffect(() => {
+    const fetchListingDetails = async () => {
+      try {
+        const response = await fetch(`/api/listing-details/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch listing details');
+
+        const data = await response.json();
+        console.log(data); // Inspectez la réponse
+
+        setFormData({
+          type: data.details?.type || [],
+          name: String(data.details?.name) || '',
+          bedrooms: String(data.details?.bedrooms) || '',
+          bathrooms: String(data.details?.bathrooms) || '',
+          parking: String(data.details?.parking) || '',
+          size: String(data.details?.size) || '',
+          price: String(data.details?.price) || '',
+          description: data.details?.description || ''
+        });
+      } catch (error) {
+        console.error('Error fetching listing details:', error);
+      }
+    };
+
+    fetchListingDetails();
+  }, [id]);
+
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const formDataToSend = {
-      ...formData,
-      bedrooms: Number(formData.bedrooms),
-      bathrooms: Number(formData.bathrooms),
-      parking: Number(formData.parking),
-      size: Number(formData.size),
-      price: Number(formData.price),
-      listingId: id
-    };
-
-    try {
-      const response = await fetch('/api/listing-details', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formDataToSend),
-      });
-
-      if (response.ok) {
-        console.log('ListingDetails saved successfully');
-      } else {
-        console.error('Failed to save ListingDetails');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -84,6 +82,46 @@ export default function EditListing() {
     });
   }
 
+  async function handleUpdate() {
+    const updatedData = {
+      listingId: id, // Make sure to include the listingId
+      type: formData.type,
+      name: formData.name,
+      bedrooms: Number(formData.bedrooms),
+      bathrooms: Number(formData.bathrooms),
+      parking: Number(formData.parking),
+      size: Number(formData.size),
+      price: Number(formData.price),
+      description: formData.description,
+    };
+
+    try {
+      const response = await fetch(`/api/listing-details`, {
+        method: 'PUT', // Change method to PUT for updating
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        console.log('Listing updated successfully');
+        router.push('/admin'); // Redirect after update
+      } else {
+        console.error('Failed to update listing');
+        // Handle error (e.g., show an error message)
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle network or other errors
+    }
+  }
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleUpdate(); // Call the update function on form submission
+  };
+
   return (
     <div className="min-h-screen bg-white text-black p-8">
       <motion.div
@@ -92,6 +130,10 @@ export default function EditListing() {
         variants={fadeInUp}
         className="max-w-4xl mx-auto"
       >
+        <div className="flex items-center mb-4 cursor-pointer" onClick={() => router.back()}>
+          <ArrowLeft className="w-5 h-5 mr-2 text-gray-700" />
+          <span className="text-gray-700">Retour</span>
+        </div>
         <h1 className="text-4xl font-bold mb-8 text-center">Edit Luxury Property Listing</h1>
         <form onSubmit={handleSubmit} className="space-y-8">
           <motion.div variants={fadeInUp} className="bg-gray-50 p-8 rounded-lg shadow-lg">
@@ -127,11 +169,12 @@ export default function EditListing() {
                 <Input
                   id="name"
                   name="name"
-                  value={formData.name}
+                  value={formData.name} // Assurez-vous que cette valeur est correctement mise à jour
                   onChange={handleInputChange}
                   placeholder="e.g. Luxury Beachfront Villa"
                   className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
                 />
+
               </div>
             </div>
             <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -194,32 +237,28 @@ export default function EditListing() {
                     type="number"
                     value={formData.size}
                     onChange={handleInputChange}
-                    placeholder="Property size"
-                    className="border-gray-300 focus:border-gray-500 focus:ring-gray-500 pr-12"
+                    placeholder="Size in square meters"
+                    className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
                   />
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">m²</span>
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="price" className="text-gray-700 flex items-center">
                   <Euro className="w-5 h-5 mr-2" />
-                  Price (€)
+                  Price
                 </Label>
-                <div className="relative">
-                  <Input
-                    id="price"
-                    name="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    placeholder="Property price"
-                    className="border-gray-300 focus:border-gray-500 focus:ring-gray-500 pr-12"
-                  />
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">€</span>
-                </div>
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  placeholder="Price in Euros"
+                  className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                />
               </div>
             </motion.div>
-            <motion.div variants={fadeInUp} className="space-y-2">
+            <div className="space-y-2 mb-6">
               <Label htmlFor="description" className="text-lg text-gray-700 flex items-center">
                 <FileText className="w-5 h-5 mr-2" />
                 Description
@@ -232,15 +271,10 @@ export default function EditListing() {
                 placeholder="Property description"
                 className="border-gray-300 focus:border-gray-500 focus:ring-gray-500"
               />
-            </motion.div>
-            <motion.div variants={fadeInUp} className="flex justify-end">
-              <Button
-                type="submit"
-                className="bg-black text-white hover:bg-gray-800 transition duration-300"
-              >
-                Update Listing
-              </Button>
-            </motion.div>
+            </div>
+            <Button type="submit" className="w-full bg-black text-white hover:bg-gray-800">
+              Update Listing
+            </Button>
           </motion.div>
         </form>
       </motion.div>

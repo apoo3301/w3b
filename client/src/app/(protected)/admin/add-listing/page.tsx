@@ -63,10 +63,10 @@ export default function AddListing() {
                 body: JSON.stringify({
                     address,
                     coordinates: `${coordinates.lat},${coordinates.lng}`,
-                    createdBy: 'ADMIN', // You can adjust this based on your auth logic
+                    createdBy: 'ADMIN',
                     details: {
-                        type: "Apartment", // Set default or dynamic values as necessary
-                        bedrooms: 2, // Replace with dynamic input values if applicable
+                        type: "Apartment",
+                        bedrooms: 2,
                         bathrooms: 1,
                         parking: 1,
                         size: 75.5,
