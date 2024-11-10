@@ -2,234 +2,241 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Instagram, Facebook, ChevronDown, Menu, X, LogIn } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
 import { useSession } from 'next-auth/react'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import UserBtn from './home/userButton'
-
+import { motion, AnimatePresence } from 'framer-motion'
+import UserButton from './ScndUserButtn'
 
 const languages = [
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
 ]
 
-
 export default function Navbar() {
-    const { data: session } = useSession();
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [currentLanguage, setCurrentLanguage] = useState('fr')
-    const [windowWidth, setWindowWidth] = useState(0)
+  const { data: session } = useSession()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [currentLanguage, setCurrentLanguage] = useState('fr')
+  const [windowWidth, setWindowWidth] = useState(0)
 
-    useEffect(() => {
-        const handleResize = () => setWindowWidth(window.innerWidth)
-        window.addEventListener('resize', handleResize)
-        handleResize()
-        return () => window.removeEventListener('resize', handleResize)
-    }, [])
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    handleResize()
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
-    const handleClick = () => {
-        window.location.href = "/auth/login"
-    }
+  const handleClick = () => {
+    window.location.href = "/auth/login"
+  }
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen)
-        document.body.style.overflow = isMenuOpen ? 'auto' : 'hidden'
-    }
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+    document.body.style.overflow = isMenuOpen ? 'auto' : 'hidden'
+  }
 
-    return (
-        <>
-            <nav
-                className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md"
-                style={{ borderRadius: '0 0 1rem 1rem' }}
-            >
-                <div className="container mx-auto px-6 py-4">
-                    <div className="flex justify-between items-center">
-                        <div className="text-2xl font-semibold flex items-center">
-                            <Link href="/" className="text-gray-800">
-                                Welkom Home.
-                            </Link>
-                        </div>
-                        <div className="hidden md:flex items-center space-x-6">
-                            <Link href="/nour-guests" className='text-gray-800 hover:text-gold transition-colors'>
-                                Nos hôtes
-                            </Link>
-                            <Link href="/join-us" className='text-gray-800 hover:text-gold transition-colors'>
-                                Nous Rejoindre
-                            </Link>
-                            <Link href="/about" className='text-gray-800 hover:text-gold transition-colors'>
-                                A propos
-                            </Link>
+  return (
+    <>
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md"
+        style={{ borderRadius: '0 0 1rem 1rem' }}
+      >
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="text-2xl font-semibold text-gray-800">
+                Welkom Home.
+              </Link>
+            </div>
+            <div className="hidden md:flex items-center space-x-6">
+              <Link href="/our-guests" className='text-gray-800 hover:text-gold transition-colors'>
+                Nos hôtes
+              </Link>
+              <Link href="/join-us" className='text-gray-800 hover:text-gold transition-colors'>
+                Nous Rejoindre
+              </Link>
+              <Link href="/about" className='text-gray-800 hover:text-gold transition-colors'>
+                A propos
+              </Link>
+              <a
+                href="https://www.instagram.com/welkomhome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-800 hover:text-gold transition-colors"
+              >
+                <Instagram size={20} />
+              </a>
+              <a
+                href="https://www.facebook.com/welkomhome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-800 hover:text-gold transition-colors"
+              >
+                <Facebook size={20} />
+              </a>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="flex items-center text-gray-800 hover:text-gold transition-colors"
+                  >
+                    {languages.find(lang => lang.code === currentLanguage)?.flag}
+                    <ChevronDown size={16} className="ml-1" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      className="flex items-center w-full px-2 py-1 hover:bg-gray-100"
+                      onClick={() => setCurrentLanguage(lang.code)}
+                    >
+                      <span className="mr-2">{lang.flag}</span>
+                      {lang.name}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+              {session ? (
+                <UserButton
+                  userName={session.user.name ?? ''}
+                  userImage={session.user.image ?? ''}
+                  userEmail={session.user.email ?? ''}
+                />
+              ) : (
+                <button
+                  className="flex items-center justify-center px-4 py-2 text-sm text-white bg-gold rounded-full transition-colors hover:bg-amber-500"
+                  onClick={handleClick}
+                >
+                  <LogIn className="mr-2" size={16} />
+                  Se connecter
+                </button>
+              )}
+            </div>
+            <div className="md:hidden">
+              <button
+                onClick={toggleMenu}
+                className="text-gray-800 focus:outline-none"
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
-                            <a
-                                href="https://www.instagram.com/welkomhome"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-800 hover:text-gold transition-colors"
-                            >
-                                <Instagram size={20} />
-                            </a>
-                            <a
-                                href="https://www.facebook.com/welkomhome"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-800 hover:text-gold transition-colors"
-                            >
-                                <Facebook size={20} />
-                            </a>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <button
-                                        className="flex items-center text-gray-800 hover:text-gold transition-colors"
-                                    >
-                                        {languages.find(lang => lang.code === currentLanguage)?.flag}
-                                        <ChevronDown size={16} className="ml-1" />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-40">
-                                    {languages.map((lang) => (
-                                        <button
-                                            key={lang.code}
-                                            className="flex items-center w-full px-2 py-1 hover:bg-gray-100"
-                                            onClick={() => setCurrentLanguage(lang.code)}
-                                        >
-                                            <span className="mr-2">{lang.flag}</span>
-                                            {lang.name}
-                                        </button>
-                                    ))}
-                                </PopoverContent>
-                            </Popover>
-                            {/* <div className="w-full max-w-xs flex justify-center mb-6">
-                                {session ? (
-                                    <UserBtn
-                                        userName={session.user.name ?? ''}
-                                        userImage={session.user.image ?? ''}
-                                        userEmail={session.user.email ?? ''}
-                                        scrolled={false}
-                                    />
-                                ) : (
-                                    <button
-                                        className="flex items-center justify-center w-full px-4 py-2 text-black bg-gold rounded-full transition-colors"
-                                        onClick={() => {
-                                            handleClick();
-                                            toggleMenu();
-                                        }}
-                                    >
-                                        <LogIn className="mr-2" size={20} />
-                                        Se connecter
-                                    </button>
-                                )}
-
-                            </div> */}
-                        </div>
-                        <div className="md:hidden">
-                            <button
-                                onClick={toggleMenu}
-                                className="text-gray-800 focus:outline-none"
-                                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                            >
-                                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                            </button>
-                        </div>
-                    </div>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-white overflow-y-auto md:hidden"
+          >
+            <div className="flex flex-col items-center justify-start min-h-screen p-4">
+              <button
+                onClick={toggleMenu}
+                className="absolute top-4 right-4 text-gray-800 focus:outline-none"
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+              <div className="flex flex-col items-center space-y-3 mt-16 mb-6">
+                {['Nos hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
+                  <div key={item}>
+                    <Link
+                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                      className="text-lg sm:text-xl text-gray-800 hover:text-gold transition-colors"
+                      onClick={toggleMenu}
+                    >
+                      {item}
+                    </Link>
+                  </div>
+                ))}
+              </div>
+              <div className="w-full max-w-xs flex justify-center mb-6">
+                {session ? (
+                  <UserButton
+                    userName={session.user.name ?? ''}
+                    userImage={session.user.image ?? ''}
+                    userEmail={session.user.email ?? ''}
+                  />
+                ) : (
+                  <button
+                    className="flex items-center justify-center w-full px-4 py-2 text-white bg-gold rounded-full transition-colors hover:bg-amber-500"
+                    onClick={() => {
+                      handleClick()
+                      toggleMenu()
+                    }}
+                  >
+                    <LogIn className="mr-2" size={20} />
+                    Se connecter
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-col items-center space-y-3">
+                <div className="flex space-x-4">
+                  <a
+                    href="https://www.instagram.com/welkomhome"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-800 hover:text-gold transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    <Instagram size={windowWidth < 640 ? 20 : 24} />
+                  </a>
+                  <a
+                    href="https://www.facebook.com/welkomhome"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-800 hover:text-gold transition-colors"
+                    onClick={toggleMenu}
+                  >
+                    <Facebook size={windowWidth < 640 ? 20 : 24} />
+                  </a>
                 </div>
-            </nav>
-
-            {isMenuOpen && (
-                <div className="fixed inset-0 z-40 bg-white overflow-y-auto">
-                    <div className="flex flex-col items-center justify-start min-h-screen p-4">
-                        <button
-                            onClick={toggleMenu}
-                            className="absolute top-4 right-4 text-gray-800 focus:outline-none"
-                            aria-label="Close menu"
-                        >
-                            <X size={24} />
-                        </button>
-                        <div className="flex flex-col items-center space-y-3 mt-16 mb-6">
-                            {['Nos hôtes', 'Nous Rejoindre', 'A propos'].map((item) => (
-                                <div key={item}>
-                                    <Link
-                                        href={`/${item.toLowerCase().replace(' ', '-')}`}
-                                        className="text-lg sm:text-xl text-gray-800 hover:text-gold transition-colors"
-                                        onClick={toggleMenu}
-                                    >
-                                        {item}
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="w-full max-w-xs flex justify-center mb-6">
-                            <button
-                                className="flex items-center justify-center w-full px-4 py-2 text-black bg-gold rounded-full transition-colors"
-                                onClick={() => {
-                                    handleClick()
-                                    toggleMenu()
-                                }}
-                            >
-                                <LogIn className="mr-2" size={20} />
-                                Se connecter
-                            </button>
-                        </div>
-                        <div className="flex flex-col items-center space-y-3">
-                            <div className="flex space-x-4">
-                                <a
-                                    href="https://www.instagram.com/welkomhome"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-800 hover:text-gold transition-colors"
-                                    onClick={toggleMenu}
-                                >
-                                    <Instagram size={windowWidth < 640 ? 20 : 24} />
-                                </a>
-                                <a
-                                    href="https://www.facebook.com/welkomhome"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-800 hover:text-gold transition-colors"
-                                    onClick={toggleMenu}
-                                >
-                                    <Facebook size={windowWidth < 640 ? 20 : 24} />
-                                </a>
-                            </div>
-                            <div className="relative">
-                                <button
-                                    className="flex items-center text-gray-800 hover:text-gold transition-colors"
-                                    onClick={() => {
-                                        const dropdown = document.getElementById('language-dropdown-mobile')
-                                        if (dropdown) {
-                                            dropdown.classList.toggle('hidden')
-                                        }
-                                    }}
-                                >
-                                    {languages.find(lang => lang.code === currentLanguage)?.flag}
-                                    <span className="ml-2">{languages.find(lang => lang.code === currentLanguage)?.name}</span>
-                                    <ChevronDown size={16} className="ml-1" />
-                                </button>
-                                <div id="language-dropdown-mobile" className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
-                                    {languages.map((lang) => (
-                                        <button
-                                            key={lang.code}
-                                            className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100"
-                                            onClick={() => {
-                                                setCurrentLanguage(lang.code)
-                                                const dropdown = document.getElementById('language-dropdown-mobile')
-                                                if (dropdown) {
-                                                    dropdown.classList.add('hidden')
-                                                }
-                                                toggleMenu()
-                                            }}
-                                        >
-                                            <span className="mr-2">{lang.flag}</span>
-                                            {lang.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="relative">
+                  <button
+                    className="flex items-center text-gray-800 hover:text-gold transition-colors"
+                    onClick={() => {
+                      const dropdown = document.getElementById('language-dropdown-mobile')
+                      if (dropdown) {
+                        dropdown.classList.toggle('hidden')
+                      }
+                    }}
+                  >
+                    {languages.find(lang => lang.code === currentLanguage)?.flag}
+                    <span className="ml-2">{languages.find(lang => lang.code === currentLanguage)?.name}</span>
+                    <ChevronDown size={16} className="ml-1" />
+                  </button>
+                  <div id="language-dropdown-mobile" className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100"
+                        onClick={() => {
+                          setCurrentLanguage(lang.code)
+                          const dropdown = document.getElementById('language-dropdown-mobile')
+                          if (dropdown) {
+                            dropdown.classList.add('hidden')
+                          }
+                          toggleMenu()
+                        }}
+                      >
+                        <span className="mr-2">{lang.flag}</span>
+                        {lang.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-            )}
-        </>
-    )
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
 }
