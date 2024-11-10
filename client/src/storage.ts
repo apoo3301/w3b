@@ -37,8 +37,7 @@ export const handleImageUpload = async (req: Request<ParamsDictionary, any, any,
         for (const file of files) {
             const imageUrl = `/uploads/${file.filename}`; // Local file path
 
-            // Save the file path to the PostgreSQL database
-            await db.listingImage.create({
+             await db.listingImage.create({
                 data: {
                     url: imageUrl,
                     listingId: listingId,
